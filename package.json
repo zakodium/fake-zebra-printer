@@ -1,0 +1,19 @@
+{
+  "name": "fake-zebra-printer",
+  "version": "0.0.0",
+  "description": "A web server that pretends to be a Zebra printer",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zakodium/fake-zebra-printer.git"
+  },
+  "author": "Michael Zasso",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zakodium/fake-zebra-printer/issues"
+  },
+  "homepage": "https://github.com/zakodium/fake-zebra-printer#readme"
+}
