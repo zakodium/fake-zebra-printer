@@ -1,6 +1,6 @@
 {
   "name": "fake-zebra-printer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A web server that pretends to be a Zebra printer",
   "main": "src/server.js",
   "scripts": {
