@@ -5,24 +5,35 @@ on:
     tags:
       - v*
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build:
     name: Publish image to ghcr.io
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Docker login
-        env:
-          GHCR_BOT_TOKEN: ${{ secrets.GHCR_BOT_TOKEN }}
-        run: echo $GHCR_BOT_TOKEN | docker login ghcr.io -u zakodium-bot --password-stdin
-      - name: Build and push the Docker image
+      
+      - name: Build image
+        run: docker build . --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+      
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
         run: |
-          IMAGE_NAME=ghcr.io/$GITHUB_REPOSITORY
-          VERSION=${GITHUB_REF##*/}
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           VERSION_START=${VERSION%%.*}
-          docker build . -t $IMAGE_NAME
+          # Push latest
           docker push $IMAGE_NAME
+          # Push full version
           docker tag $IMAGE_NAME $IMAGE_NAME:$VERSION
           docker push $IMAGE_NAME:$VERSION
+          # Push short version
           docker tag $IMAGE_NAME $IMAGE_NAME:$VERSION_START
           docker push $IMAGE_NAME:$VERSION_START
